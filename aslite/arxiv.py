@@ -10,20 +10,26 @@ from collections import OrderedDict
 
 logger = logging.getLogger(__name__)
 
-def get_response(search_query, start_index=0):
-    """ pings arxiv.org API to fetch a batch of 100 papers """
-    # fetch raw response
+def get_response(search_query=None, start_index=0, id_list=None):
+    """ pings arxiv.org API to fetch papers by query or by list of IDs """
     base_url = 'http://export.arxiv.org/api/query?'
-    add_url = 'search_query=%s&sortBy=lastUpdatedDate&start=%d&max_results=100' % (search_query, start_index)
-    #add_url = 'search_query=%s&sortBy=submittedDate&start=%d&max_results=100' % (search_query, start_index)
-    search_query = base_url + add_url
-    logger.debug(f"Searching arxiv for {search_query}")
-    with urllib.request.urlopen(search_query) as url:
+
+    if id_list is not None:
+        # id_list can be a string or list of strings
+        if isinstance(id_list, list):
+            id_list = ','.join(id_list)
+        url_str = f"{base_url}id_list={id_list}"
+    elif search_query is not None:
+        url_str = f"{base_url}search_query={search_query}&sortBy=lastUpdatedDate&start={start_index}&max_results=100"
+    else:
+        raise ValueError("Must provide either search_query or id_list")
+
+    logger.debug(f"Searching arxiv for {url_str}")
+    with urllib.request.urlopen(url_str) as url:
         response = url.read()
 
     if url.status != 200:
         logger.error(f"arxiv did not return status 200 response")
-
     return response
 
 def encode_feedparser_dict(d):

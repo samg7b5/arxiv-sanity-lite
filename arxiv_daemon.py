@@ -21,6 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--num', type=int, default=100, help='up to how many papers to fetch')
     parser.add_argument('-s', '--start', type=int, default=0, help='start at what index')
     parser.add_argument('-b', '--break-after', type=int, default=3, help='how many 0 new papers in a row would cause us to stop early? or 0 to disable.')
+    parser.add_argument('--ids', type=str, default=None, help='Comma-separated list of arXiv IDs to fetch and ingest')
     args = parser.parse_args()
     print(args)
     """
@@ -50,8 +51,15 @@ if __name__ == '__main__':
         ntried = 0
         while True:
             try:
-                resp = get_response(search_query=q, start_index=k)
-                papers = parse_response(resp)
+                if args.ids:
+                    resp = get_response(id_list=args.ids.split(','))
+                    papers = parse_response(resp)
+                    if len(papers) == 0:
+                        raise ValueError(f"No papers found for given IDs: {args.ids}")
+                else:
+                    resp = get_response(search_query=q, start_index=k)  # default behaviour
+                    papers = parse_response(resp)
+                logging.info(f"Got {len(papers)} papers so far...")  # DEBUG
                 time.sleep(0.5)
                 if len(papers) == 100:
                     break # otherwise we have to try again
