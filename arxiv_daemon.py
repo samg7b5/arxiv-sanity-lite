@@ -70,7 +70,7 @@ if __name__ == '__main__':
                 logging.warning("will try again in a bit...")
                 ntried += 1
                 if ntried > 1000:
-                    logging.error("ok we tried 1,000 times, something is srsly wrong. exitting.")
+                    logging.error("ok we tried 1,000 times, something is srsly wrong. exiting.")
                     sys.exit()
                 time.sleep(2 + random.uniform(0, 4))
 
@@ -105,7 +105,7 @@ if __name__ == '__main__':
                 logging.info("breaking out early, no new papers %d times in a row" % (args.break_after, ))
                 break
             elif k == 0:
-                logging.info("our very first call for the latest there were no new papers, exitting")
+                logging.info("our very first call for the latest there were no new papers, exiting")
                 break
         else:
             zero_updates_in_a_row = 0
