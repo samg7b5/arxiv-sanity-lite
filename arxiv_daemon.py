@@ -55,6 +55,8 @@ if __name__ == '__main__':
                 time.sleep(0.5)
                 if len(papers) == 100:
                     break # otherwise we have to try again
+                elif len(papers) > 0:
+                    break # NEW: actually always break; don't only wait for 100 new
             except Exception as e:
                 logging.warning(e)
                 logging.warning("will try again in a bit...")
