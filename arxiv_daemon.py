@@ -45,18 +45,18 @@ if __name__ == '__main__':
     total_updated = 0
     zero_updates_in_a_row = 0
     for k in range(args.start, args.start + args.num, 100):
-        logging.info('querying arxiv api for query %s at start_index %d' % (q, k))
-
         # attempt to fetch a batch of papers from arxiv api
         ntried = 0
         while True:
             try:
                 if args.ids:
+                    logging.info('querying arxiv api for specified IDs...')
                     resp = get_response(id_list=args.ids.split(','))
                     papers = parse_response(resp)
                     if len(papers) == 0:
                         raise ValueError(f"No papers found for given IDs: {args.ids}")
                 else:
+                    logging.info('querying arxiv api for query %s at start_index %d' % (q, k))
                     resp = get_response(search_query=q, start_index=k)  # default behaviour
                     papers = parse_response(resp)
                 logging.info(f"Got {len(papers)} papers so far...")  # DEBUG
