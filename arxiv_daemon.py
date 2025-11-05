@@ -51,7 +51,7 @@ if __name__ == '__main__':
             try:
                 if args.ids:
                     logging.info('querying arxiv api for specified IDs...')
-                    id_list = args.ids.split(',')
+                    id_list = list(set(args.ids.split(',')))  # de-dupe
                     papers = []
                     batch_size = 10  # seems to be the API limit
                     for i in range (0, len(id_list), batch_size):
