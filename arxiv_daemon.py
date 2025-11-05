@@ -51,8 +51,13 @@ if __name__ == '__main__':
             try:
                 if args.ids:
                     logging.info('querying arxiv api for specified IDs...')
-                    resp = get_response(id_list=args.ids.split(','))
-                    papers = parse_response(resp)
+                    id_list = args.ids.split(',')
+                    papers = []
+                    batch_size = 10  # seems to be the API limit
+                    for i in range (0, len(id_list), batch_size):
+                        batch = id_list[i: i+batch_size]
+                        resp = get_response(id_list=batch)
+                        papers.extend(parse_response(resp))
                     if len(papers) == 0:
                         raise ValueError(f"No papers found for given IDs: {args.ids}")
                 else:
