@@ -58,6 +58,7 @@ if __name__ == '__main__':
                         batch = id_list[i: i+batch_size]
                         resp = get_response(id_list=batch)
                         papers.extend(parse_response(resp))
+                        time.sleep(0.5)
                     if len(papers) == 0:
                         raise ValueError(f"No papers found for given IDs: {args.ids}")
                 else:
