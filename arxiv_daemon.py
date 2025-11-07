@@ -71,13 +71,16 @@ if __name__ == '__main__':
                     break # otherwise we have to try again
                 elif len(papers) > 0:
                     break # NEW: actually always break; don't only wait for 100 new
+                else:  # no results
+                    papers = []
+                    break
             except Exception as e:
                 logging.warning(e)
                 if args.ids:
                     print(f"Dodgy batch: {batch}")
                 logging.warning("will try again in a bit...")
                 ntried += 1
-                if ntried > 1000:
+                if ntried > 100:
                     logging.error("ok we tried 1,000 times, something is srsly wrong. exiting.")
                     sys.exit()
                 time.sleep(2 + random.uniform(0, 4))
@@ -102,7 +105,8 @@ if __name__ == '__main__':
         total_updated += nreplace + nnew
 
         # some diagnostic information on how things are coming along
-        logging.info(papers[0]['_time_str'])
+        if len(papers)>0:
+            logging.info(papers[0]['_time_str'])
         logging.info("k=%d, out of %d: had %d, replaced %d, new %d. now have: %d" %
              (k, len(papers), nhad, nreplace, nnew, prevn))
 

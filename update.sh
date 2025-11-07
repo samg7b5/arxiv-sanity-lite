@@ -6,3 +6,5 @@ if [ $? -eq 0 ]; then
 else
     echo "No new papers were added"
 fi
+
+/home/sam/notify/main.sh "📄 arxiv update completed."
