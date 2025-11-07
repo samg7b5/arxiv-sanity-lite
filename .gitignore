@@ -5,3 +5,4 @@ data
 *.ipynb
 secret_key.txt
 update-cron.log
+default_user.txt

@@ -64,6 +64,13 @@ def get_metas():
 
 @app.before_request
 def before_request():
+
+    # Auto-login default user (for personal use only)
+    if 'user' not in session and os.path.isfile('default_user.txt'):
+        default_user = open('default_user.txt').read().strip()
+        if default_user:
+            session['user'] = default_user
+
     g.user = session.get('user', None)
 
     # record activity on this user so we can reserve periodic
