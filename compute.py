@@ -15,7 +15,7 @@ from aslite.db import get_papers_db, save_features
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Arxiv Computor')
-    parser.add_argument('-n', '--num', type=int, default=20000, help='number of tfidf features')
+    parser.add_argument('-n', '--num', type=int, default=5000, help='number of tfidf features')   # default of 20k might be too high for this machine
     parser.add_argument('--min_df', type=int, default=5, help='min df')
     parser.add_argument('--max_df', type=float, default=0.1, help='max df')
     parser.add_argument('--max_docs', type=int, default=-1, help='maximum number of documents to use when training tfidf, or -1 to disable')
