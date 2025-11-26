@@ -181,7 +181,29 @@ def search_rank(q: str = ''):
         return [], [] # no query? no results
     qs = q.lower().strip().split() # split query by spaces and lowercase
 
+    def normalize_pid(pid: str):
+        pid = pid.lower().strip()
+        pid_base = pid.split('v')[0]          # remove version suffix
+        return pid, pid_base, pid_base.replace('.', '')
+
+    q_clean, q_base, q_base_nodot = normalize_pid(q)  # for pid searching
+
     pdb = get_papers()
+
+    # check for exact pid match
+    exact_pid_hits = []
+    for pid, p in pdb.items():
+        pid_clean, pid_base, pid_base_nodot = normalize_pid(pid)
+        if (
+                q_clean == pid_clean or
+                q_clean == pid_base or
+                q_base == pid_base or
+                q_base_nodot == pid_base_nodot
+            ):
+            # give a huge score so it sorts to the top
+            exact_pid_hits.append((1e9, pid))
+
+    # continue with the usual scoring
     match = lambda s: sum(min(3, s.lower().count(qp)) for qp in qs)
     matchu = lambda s: sum(int(s.lower().count(qp) > 0) for qp in qs)
     pairs = []
@@ -193,9 +215,17 @@ def search_rank(q: str = ''):
         if score > 0:
             pairs.append((score, pid))
 
-    pairs.sort(reverse=True)
-    pids = [p[1] for p in pairs]
-    scores = [p[0] for p in pairs]
+#    pairs.sort(reverse=True)
+#    pids = [p[1] for p in pairs]
+#    scores = [p[0] for p in pairs]
+
+    # merge pid search with usual search results
+    all_hits = exact_pid_hits + pairs
+    all_hits.sort(reverse=True)
+
+    pids = [pid for score, pid in all_hits]
+    scores = [score for score, pid in all_hits]
+
     return pids, scores
 
 # -----------------------------------------------------------------------------
