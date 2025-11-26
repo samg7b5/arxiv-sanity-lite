@@ -25,6 +25,7 @@ def get_response(search_query=None, start_index=0, id_list=None):
         raise ValueError("Must provide either search_query or id_list")
 
     logger.debug(f"Searching arxiv for {url_str}")
+    print(url_str)
     with urllib.request.urlopen(url_str) as url:
         response = url.read()
 
